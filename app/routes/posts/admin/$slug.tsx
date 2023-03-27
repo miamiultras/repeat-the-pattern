@@ -54,8 +54,6 @@ export const action = async ({ request }: ActionArgs) => {
   return redirect("/posts/admin");
 };
 
-
-
 const inputClassName = `w-full rounded border border-gray-500 px-2 py-1 text-lg`;
 
 export default function PostSlug() {
@@ -78,7 +76,7 @@ export default function PostSlug() {
     const { name, value } = event.currentTarget;
     setFormData({ ...formData, [name]: value });
   }
-  
+
   return (
     <main className="mx-auto max-w-4xl">
       <Form method="post">
