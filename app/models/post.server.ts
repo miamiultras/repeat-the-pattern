@@ -2,6 +2,15 @@ import { prisma } from "~/db.server";
 
 import type { Post } from "@prisma/client";
 
+export async function getPostListings() {
+	return prisma.post.findMany({
+		select: {
+			slug: true,
+			title: true
+		}
+	})
+}
+
 export async function getPosts() {
 	return prisma.post.findMany();
 }
