@@ -6,8 +6,11 @@ import invariant from "tiny-invariant";
 import * as React from "react";
 
 import { getPost, updatePost } from "~/models/post.server";
+import { requireAdminUser } from "~/session.server";
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderArgs) => {
+  await requireAdminUser(request)
+
   invariant(params.slug, `params.slug is required`);
 
   const post = await getPost(params.slug);

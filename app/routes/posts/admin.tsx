@@ -1,3 +1,4 @@
+import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
   Link,
@@ -6,8 +7,10 @@ import {
 } from "@remix-run/react";
 
 import { getPostListings } from "~/models/post.server";
+import { requireAdminUser } from "~/session.server";
 
-export const loader = async () => {
+export const loader = async ({ request }: LoaderArgs) => {
+  await requireAdminUser(request)
   return json({ posts: await getPostListings() });
 };
 

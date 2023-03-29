@@ -1,11 +1,19 @@
-import type { ActionArgs } from "@remix-run/node";
+import type { ActionArgs, ActionFunction, LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, useActionData } from "@remix-run/react";
+import { Form, useActionData, useNavigation } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
 import { createPost } from "~/models/post.server";
+import { requireAdminUser } from "~/session.server";
 
-export const action = async ({ request }: ActionArgs) => {
+export const loader = async ({ request }: LoaderArgs) => {
+  await requireAdminUser(request)
+  return json({})
+};
+
+export const action: ActionFunction = async ({ request }: ActionArgs) => {
+  await requireAdminUser(request)
+  
   const formData = await request.formData();
 
   const title = formData.get("title");
@@ -46,6 +54,9 @@ const inputClassName = `w-full rounded border border-gray-500 px-2 py-1 text-lg`
 
 export default function NewPost() {
   const errors = useActionData<typeof action>();
+
+  const navigation = useNavigation()
+  const isCreating = navigation.state === 'loading'
 
   return (
     <Form method="post">
@@ -97,8 +108,9 @@ export default function NewPost() {
         <button
           type="submit"
           className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400 disabled:bg-blue-300"
+          disabled={isCreating}
         >
-          Create Post
+          {isCreating ? 'Creating...' : 'Create Post'}
         </button>
       </p>
     </Form>
