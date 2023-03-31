@@ -7,13 +7,13 @@ import { createPost } from "~/models/post.server";
 import { requireAdminUser } from "~/session.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
-  await requireAdminUser(request)
-  return json({})
+  await requireAdminUser(request);
+  return json({});
 };
 
 export const action: ActionFunction = async ({ request }: ActionArgs) => {
-  await requireAdminUser(request)
-  
+  await requireAdminUser(request);
+
   const formData = await request.formData();
 
   const title = formData.get("title");
@@ -25,25 +25,14 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
     slug: slug ? null : "Slug is required",
     markdown: markdown ? null : "Markdown is required",
   };
-  const hasErrors = Object.values(errors).some(
-    (errorMessage) => errorMessage
-  );
+  const hasErrors = Object.values(errors).some((errorMessage) => errorMessage);
   if (hasErrors) {
     return json(errors);
   }
 
-  invariant(
-    typeof title === "string",
-    "title must be a string"
-  );
-  invariant(
-    typeof slug === "string",
-    "slug must be a string"
-  );
-  invariant(
-    typeof markdown === "string",
-    "markdown must be a string"
-  );
+  invariant(typeof title === "string", "title must be a string");
+  invariant(typeof slug === "string", "slug must be a string");
+  invariant(typeof markdown === "string", "markdown must be a string");
 
   await createPost({ title, slug, markdown });
 
@@ -55,8 +44,8 @@ const inputClassName = `w-full rounded border border-gray-500 px-2 py-1 text-lg`
 export default function NewPost() {
   const errors = useActionData<typeof action>();
 
-  const navigation = useNavigation()
-  const isCreating = navigation.state === 'loading'
+  const navigation = useNavigation();
+  const isCreating = navigation.state === "loading";
 
   return (
     <Form method="post">
@@ -66,11 +55,7 @@ export default function NewPost() {
           {errors?.title ? (
             <em className="text-red-600">{errors.title}</em>
           ) : null}
-          <input
-            type="text"
-            name="title"
-            className={inputClassName}
-          />
+          <input type="text" name="title" className={inputClassName} />
         </label>
       </p>
       <p>
@@ -79,20 +64,14 @@ export default function NewPost() {
           {errors?.slug ? (
             <em className="text-red-600">{errors.slug}</em>
           ) : null}
-          <input
-            type="text"
-            name="slug"
-            className={inputClassName}
-          />
+          <input type="text" name="slug" className={inputClassName} />
         </label>
       </p>
       <p>
         <label htmlFor="markdown">
           Markdown:{" "}
           {errors?.markdown ? (
-            <em className="text-red-600">
-              {errors.markdown}
-            </em>
+            <em className="text-red-600">{errors.markdown}</em>
           ) : null}
         </label>
 
@@ -110,7 +89,7 @@ export default function NewPost() {
           className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400 disabled:bg-blue-300"
           disabled={isCreating}
         >
-          {isCreating ? 'Creating...' : 'Create Post'}
+          {isCreating ? "Creating..." : "Create Post"}
         </button>
       </p>
     </Form>

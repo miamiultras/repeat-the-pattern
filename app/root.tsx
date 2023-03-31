@@ -7,7 +7,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData
+  useLoaderData,
 } from "@remix-run/react";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
@@ -21,7 +21,7 @@ export const links: LinksFunction = () => {
 export async function loader({ request }: LoaderArgs) {
   return json({
     user: await getUser(request),
-    ENV: getEnv()
+    ENV: getEnv(),
   });
 }
 
@@ -39,7 +39,11 @@ export default function App() {
         <Outlet />
         <ScrollRestoration />
         <Scripts />
-        <script dangerouslySetInnerHTML={{__html: `window.ENV = ${JSON.stringify(data.ENV)}`}}/>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.ENV = ${JSON.stringify(data.ENV)}`,
+          }}
+        />
         <LiveReload />
       </body>
     </html>

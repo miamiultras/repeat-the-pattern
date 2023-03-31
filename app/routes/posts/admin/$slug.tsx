@@ -9,7 +9,7 @@ import { getPost, updatePost } from "~/models/post.server";
 import { requireAdminUser } from "~/session.server";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
-  await requireAdminUser(request)
+  await requireAdminUser(request);
 
   invariant(params.slug, `params.slug is required`);
 
@@ -32,25 +32,14 @@ export const action = async ({ request }: ActionArgs) => {
     slug: slug ? null : "Slug is required",
     markdown: markdown ? null : "Markdown is required",
   };
-  const hasErrors = Object.values(errors).some(
-    (errorMessage) => errorMessage
-  );
+  const hasErrors = Object.values(errors).some((errorMessage) => errorMessage);
   if (hasErrors) {
     return json(errors);
   }
 
-  invariant(
-    typeof title === "string",
-    "title must be a string"
-  );
-  invariant(
-    typeof slug === "string",
-    "slug must be a string"
-  );
-  invariant(
-    typeof markdown === "string",
-    "markdown must be a string"
-  );
+  invariant(typeof title === "string", "title must be a string");
+  invariant(typeof slug === "string", "slug must be a string");
+  invariant(typeof markdown === "string", "markdown must be a string");
 
   await updatePost({ title, slug, markdown });
 
@@ -70,8 +59,8 @@ export default function PostSlug() {
   });
 
   React.useEffect(() => {
-    setFormData(post)
-  }, [post])
+    setFormData(post);
+  }, [post]);
 
   function handleChange(
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -117,9 +106,7 @@ export default function PostSlug() {
           <label htmlFor="markdown">
             Markdown:{" "}
             {errors?.markdown ? (
-              <em className="text-red-600">
-                {errors.markdown}
-              </em>
+              <em className="text-red-600">{errors.markdown}</em>
             ) : null}
           </label>
 
@@ -143,6 +130,5 @@ export default function PostSlug() {
         </p>
       </Form>
     </main>
-
   );
 }

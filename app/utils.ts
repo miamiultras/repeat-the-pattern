@@ -68,9 +68,9 @@ export function useUser(): User {
 
 export function useOptionalAdminUser(): User | null {
   const user = useOptionalUser();
-  if (!user) return null
-  if (user.email !== ENV.ADMIN_EMAIL) return null
-  return user
+  if (!user) return null;
+  if (user.email !== ENV.ADMIN_EMAIL) return null;
+  return user;
 }
 
 export function validateEmail(email: unknown): email is string {

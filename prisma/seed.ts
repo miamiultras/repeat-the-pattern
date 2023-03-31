@@ -85,7 +85,6 @@ async function seed() {
     });
   }
 
-
   console.log(`Database has been seeded. 🌱`);
 }
 
@@ -97,4 +96,3 @@ seed()
   .finally(async () => {
     await prisma.$disconnect();
   });
-
