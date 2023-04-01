@@ -3,8 +3,10 @@ import { json, redirect } from "@remix-run/node";
 import {
   Form,
   useActionData,
+  useCatch,
   useLoaderData,
   useNavigation,
+  useParams,
 } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
@@ -23,6 +25,10 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     return json({ post: null });
   }
   const post = await getPost(params.slug);
+  if (!post) {
+    throw new Response("Not Found", { status: 404 });
+  }
+
   return json({ post });
 };
 
@@ -153,4 +159,15 @@ export default function NewPost() {
       </p>
     </Form>
   );
+}
+
+export function CatchBoundary() {
+  const caught = useCatch();
+  const params = useParams();
+  if (caught.status === 404) {
+    return (
+      <div>Uh oh! The post with the slug "{params.slug}" does not exist!</div>
+    );
+  }
+  throw new Error(`Unsupported thrown response status code: ${caught.status}`);
 }
