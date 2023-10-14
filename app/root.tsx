@@ -1,49 +1,53 @@
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
 import {
+  Form,
   Links,
   LiveReload,
   Meta,
-  Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData,
 } from "@remix-run/react";
 
-import tailwindStylesheetUrl from "./styles/tailwind.css";
-import { getUser } from "./session.server";
-import { getEnv } from "./env.server";
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
-};
-
-export async function loader({ request }: LoaderArgs) {
-  return json({
-    user: await getUser(request),
-    ENV: getEnv(),
-  });
-}
-
 export default function App() {
-  const data = useLoaderData();
   return (
-    <html lang="en" className="h-full">
+    <html lang="en">
       <head>
         <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
       </head>
-      <body className="h-full">
-        <Outlet />
+      <body>
+        <div id="sidebar">
+          <h1>Remix Contacts</h1>
+          <div>
+            <Form id="search-form" role="search">
+              <input
+                id="q"
+                aria-label="Search contacts"
+                placeholder="Search"
+                type="search"
+                name="q"
+              />
+              <div id="search-spinner" aria-hidden hidden={true} />
+            </Form>
+            <Form method="post">
+              <button type="submit">New</button>
+            </Form>
+          </div>
+          <nav>
+            <ul>
+              <li>
+                <a href={`/contacts/1`}>Your Name</a>
+              </li>
+              <li>
+                <a href={`/contacts/2`}>Your Friend</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+
         <ScrollRestoration />
         <Scripts />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `window.ENV = ${JSON.stringify(data.ENV)}`,
-          }}
-        />
         <LiveReload />
       </body>
     </html>
