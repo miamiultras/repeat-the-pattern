@@ -1,17 +1,23 @@
-import { Form } from "@remix-run/react";
-import type { FunctionComponent } from "react";
+import { Form, useLoaderData } from "@remix-run/react";
+import { json } from "@remix-run/node";
+import invariant from "tiny-invariant";
+import { getContact } from "../data";
 
+import type { FunctionComponent } from "react";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import type { ContactRecord } from "../data";
 
+export const loader = async ({ params }: LoaderFunctionArgs) => {
+  invariant(params.contactId, "Missing contactId param");
+  const contact = await getContact(params.contactId);
+  if (!contact) {
+    throw new Response("Not Found", { status: 404 });
+  }
+  return json({ contact });
+};
+
 export default function Contact() {
-  const contact = {
-    first: "Your",
-    last: "Name",
-    avatar: "https://placekitten.com/g/200/200",
-    twitter: "your_handle",
-    notes: "Some notes",
-    favorite: true,
-  };
+  const { contact } = useLoaderData<typeof loader>();
 
   return (
     <div id="contact">
@@ -37,11 +43,7 @@ export default function Contact() {
 
         {contact.twitter ? (
           <p>
-            <a
-              href={contact.twitter}
-            >
-              {contact.twitter}
-            </a>
+            <a href={contact.twitter}>{contact.twitter}</a>
           </p>
         ) : null}
 
@@ -80,11 +82,7 @@ const Favorite: FunctionComponent<{
   return (
     <Form method="post">
       <button
-        aria-label={
-          favorite
-            ? "Remove from favorites"
-            : "Add to favorites"
-        }
+        aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
         name="favorite"
         value={favorite ? "false" : "true"}
       >
